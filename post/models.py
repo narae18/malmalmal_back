@@ -7,7 +7,7 @@ class Post(models.Model):
     ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
-    author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_nickname')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile_nickname')
     like = models.ManyToManyField(User, related_name='liked_post', blank=True, default=0)
     published_date = models.DateTimeField(default=timezone.now)
     
@@ -19,7 +19,7 @@ class Editor_Post(models.Model):
     ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
-    author = models.ForeignKey(EditorProfile, on_delete=models.CASCADE, related_name='editor_name')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='editor_name')
     date = models.DateField(blank=False, null=False)
     recruit_date = models.DateField(blank=False, null=False)
     place = models.CharField(max_length=100, blank=False, null=False)

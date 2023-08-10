@@ -8,7 +8,7 @@ from .serializers import PostSerializer, PostCreateSerializer, EditorPostSeriali
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    permission_classes = [CustomReadOnly]
+    permission_classes = []
     
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -16,14 +16,15 @@ class PostViewSet(viewsets.ModelViewSet):
         return PostCreateSerializer
     
     def perform_create(self, serializer):
-        profile = Profile.objects.get(user=self.request.user)  
+        profile = Profile.objects.get(user=self.request.user)
         serializer.save(author=self.request.user, profile=profile)
+
     
         
         
 class EditorPostViewSet(viewsets.ModelViewSet):
     queryset = Editor_Post.objects.all()
-    permission_classes = [CustomReadOnly]
+    permission_classes = []
     
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
