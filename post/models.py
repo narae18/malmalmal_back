@@ -31,3 +31,21 @@ class Editor_Post(models.Model):
     
     def __str__(self):
         return self.title
+    
+#게시물 제목 tts 파일
+class TTSAudioTitle(models.Model):
+    title_message = models.TextField()
+    audio_file = models.FileField(upload_to='tts_title/')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # 유저 모델 연결
+
+    def __str__(self):
+        return self.title_message
+
+#게시물 tts 파일
+class TTSAudio(models.Model):
+    message = models.TextField()
+    audio_file = models.FileField(upload_to='tts/')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # 유저 모델 연결
+
+    def __str__(self):
+        return self.message

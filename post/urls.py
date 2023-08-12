@@ -6,4 +6,5 @@ router = routers.SimpleRouter()
 router.register('posts', PostViewSet)
 router.register('editorposts', EditorPostViewSet)
 
+
 urlpatterns = router.urls
