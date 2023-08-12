@@ -19,7 +19,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile.user.field.related_model
-        fields = ('username', "password", "password2") #"birthday", "address", "nickname"
+        fields = ('username', 'password', 'password2') #"birthday", "address", "nickname"
         
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -56,7 +56,7 @@ class LoginSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('user') #'birthday', 'nickname', 'address'
+        fields = ['user', 'birthday', 'nickname', 'address']
         
 
 class EditorProfileSerializer(serializers.ModelSerializer):
