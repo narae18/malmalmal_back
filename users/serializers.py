@@ -1,12 +1,9 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-
 from rest_framework.validators import UniqueValidator
-
 from django.contrib.auth import authenticate
+from .models import Profile, EditorProfile
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -16,25 +13,24 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
     password2 = serializers.CharField(write_only=True, required=True)
     
-    birthday = serializers.DateField(required=True)
-    address = serializers.CharField(required=True)
-    nickname = serializers.CharField(required=True)
+    # birthday = serializers.DateField(required=True)
+    # address = serializers.CharField(required=True)
+    # nickname = serializers.CharField(required=True)
     
     class Meta:
-        model = User
-        fields = ('username', "password", "password2", "birthday", "address", "nickname")
+        model = Profile.user.field.related_model
+        fields = ('username', "password", "password2") #"birthday", "address", "nickname"
         
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError(
-                {"password":"비밀번호가 일치하지 않습니다!"}
+                {"password": "비밀번호가 일치하지 않습니다!"}
             )
         
         return data
     
     def create(self, validated_data):
-        
-        user = User.objects.create_user(
+        user = Profile.user.field.related_model.objects.create_user(
             username=validated_data['username'],
         )
         user.set_password(validated_data['password'])
@@ -59,11 +55,21 @@ class LoginSerializer(serializers.Serializer):
         
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('username', 'birthday', 'nickname', 'address')
+        model = Profile
+        fields = ('user') #'birthday', 'nickname', 'address'
         
 
 class EditorProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('username', 'name', 'address')
+        model = EditorProfile
+        fields = ['user', 'name', 'address']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+
+        if not user.is_authenticated:
+            raise serializers.ValidationError("로그인한 사용자만 프로필을 생성할 수 있습니다.")
+
+        validated_data['user'] = user
+        editor_profile = EditorProfile.objects.create(**validated_data)
+        return editor_profile

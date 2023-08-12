@@ -2,7 +2,7 @@ from rest_framework import viewsets
 
 from users.models import Profile, EditorProfile
 from .models import Post, Editor_Post   
-from .permissions import CustomReadOnly
+# from .permissions import CustomReadOnly
 from .serializers import PostSerializer, PostCreateSerializer, EditorPostSerializer, EditorPostCreateSerializer 
 
 
@@ -16,8 +16,10 @@ class PostViewSet(viewsets.ModelViewSet):
         return PostCreateSerializer
     
     def perform_create(self, serializer):
-        profile = Profile.objects.get(user=self.request.user)
-        serializer.save(author=self.request.user, profile=profile)
+        print("현재의 접속 User:", self.request.user)
+        # profile = Profile.objects.get(user=self.request.user)
+        # serializer.save(author=self.request.user, profile=profile)
+        serializer.save(author=self.request.user)
 
     
         

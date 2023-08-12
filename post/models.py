@@ -4,7 +4,7 @@ from django.utils import timezone
 from users.models import Profile, EditorProfile
 
 class Post(models.Model):
-    ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
+    # ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile_nickname')
@@ -16,7 +16,7 @@ class Post(models.Model):
 
 
 class Editor_Post(models.Model):
-    ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
+    # ID = models.AutoField(primary_key=True, null=False, blank=True, default=0)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='editor_name')

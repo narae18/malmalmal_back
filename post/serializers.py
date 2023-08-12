@@ -7,8 +7,8 @@ class PostSerializer(serializers.ModelSerializer):
     nickname = ProfileSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ('published_date', 'like', 'author', 'title', 'content')
-        read_only_fields = ('id', 'published_date', 'like', 'author')
+        fields = ('published_date', 'like', 'author', 'title', 'content', 'nickname')  # 'nickname' 필드 추가
+        read_only_fields = ('id', 'published_date', 'like', 'author', 'nickname')
         
         
 
@@ -19,11 +19,13 @@ class PostCreateSerializer(serializers.ModelSerializer):
         
 
 class EditorPostSerializer(serializers.ModelSerializer):
-    name = EditorProfileSerializer(read_only=True)
+    name = serializers.StringRelatedField(source='name.user', read_only=True)
+
     class Meta:
         model = Editor_Post
-        fields = ('published_date', 'like', 'scarp', 'author', 'title', 'content', 'date', 'recruit_date', 'place', 'phone_number', 'image')
-        read_only_fields = ('id','published_date', 'like', 'scarp', 'name', 'image','author')
+        fields = ('name', 'published_date', 'like', 'scarp', 'author', 'title', 'content', 'date', 'recruit_date', 'place', 'phone_number', 'image')
+        read_only_fields = ('id', 'published_date', 'like', 'scarp', 'name', 'image', 'author')
+
 
 
 class EditorPostCreateSerializer(serializers.ModelSerializer):
