@@ -7,6 +7,8 @@ from .models import Post, Editor_Post, TTSAudioTitle, TTSAudio, Like
 # from .permissions import CustomReadOnly
 from .serializers import PostSerializer, EditorPostSerializer, EditorPostCreateSerializer, TTSAudioSerializer, TTSAudioTitleSerializer
 
+from django.db.models import Count, Q
+
 #tts 관련
 from rest_framework.decorators import action
 from rest_framework.views import APIView
@@ -79,6 +81,12 @@ class PostViewSet(viewsets.ModelViewSet):
         except Like.DoesNotExist:
             Like.objects.create(user=user, post=post)
             return Response({'message': '좋아요 추가됨'})
+        
+    @action(methods=["GET"], detail=False)
+    def top3(self, request):
+        queryset = self.get_queryset().annotate(like_count=Count('likes')).order_by("-like_count")[:3]
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
     
     
         
