@@ -1,27 +1,18 @@
-import os
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Count, Q
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import viewsets
-
+# from .permissions import CustomReadOnly
 from users.models import Profile, EditorProfile
 from .models import Post, Editor_Post, TTSAudioTitle, TTSAudio, Like
-# from .permissions import CustomReadOnly
-from .serializers import PostSerializer, EditorPostSerializer, EditorPostCreateSerializer, TTSAudioSerializer, TTSAudioTitleSerializer
+from .serializers import PostSerializer, EditorPostSerializer, EditorPostCreateSerializer
 from .paginations import PostPagination
-
-from django.db.models import Count, Q
 
 #tts 관련
 from rest_framework.decorators import action
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.conf import settings
 
-from gtts import gTTS
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import AllowAny
 
 
 class PostViewSet(viewsets.ModelViewSet):

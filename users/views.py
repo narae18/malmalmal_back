@@ -1,10 +1,9 @@
 from rest_framework import generics
-
+from rest_framework.generics import ListAPIView
 from .serializers import  ProfileSerializer, EditorProfileSerializer
 from .models import Profile, EditorProfile
 from post.models import Post
 from post.serializers import PostSerializer
-from rest_framework.generics import ListAPIView
 
 
 class ProfileListView(generics.ListAPIView):

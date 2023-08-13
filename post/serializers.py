@@ -1,9 +1,11 @@
-from rest_framework import serializers
-from users.serializers import ProfileSerializer, EditorProfileSerializer
-from .models import Post, Editor_Post, User, Profile, EditorProfile, TTSAudio, TTSAudioTitle
+import os
 from gtts import gTTS
 from django.conf import settings
-import os
+from rest_framework import serializers
+
+from users.serializers import ProfileSerializer, EditorProfileSerializer
+from .models import Post, Editor_Post, User, Profile, EditorProfile, TTSAudio, TTSAudioTitle
+
 
 class TTSAudioTitleSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,7 +1,6 @@
-from django.urls import path, include
-from rest_framework import routers
-from .views import RegisterView, LoginView
 from django.urls import path
+# from rest_framework import routers
+from .views import RegisterView, LoginView
 
 app_name = "accounts"
 
