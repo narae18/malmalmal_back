@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, Q
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -11,6 +12,7 @@ from .paginations import PostPagination
 #tts 관련
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 
 
@@ -67,7 +69,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
         return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
@@ -93,7 +95,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
             
-                
+                            
 class EditorPostViewSet(viewsets.ModelViewSet):
     queryset = Editor_Post.objects.all()
     permission_classes = []
@@ -106,4 +108,29 @@ class EditorPostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         editor_profile = EditorProfile.objects.get(user=self.request.user)  
         serializer.save(author=self.request.user, editor_profile=editor_profile)
+        
+        
+ # 프론트 서버로 tts_title_mp3파일 전송하기 위한 APIView       
+class TTSAudioTitleAPIView(APIView):
+    def get(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+        if post.tts_title_audio:
+            file_path = post.tts_title_audio.audio_file.path
+            with open(file_path, 'rb') as f:
+                response = HttpResponse(f, content_type='audio/mpeg')
+                response['Content-Disposition'] = f'attachment; filename="tts_title_{post.id}.mp3"'
+                return response
+        return Response({'message': '음성 파일이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+        
+ # 프론트 서버로 tts_mp3파일 전송하기 위한 APIView      
+class TTSAudioAPIView(APIView):
+    def get(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+        if post.tts_audio:
+            file_path = post.tts_audio.audio_file.path
+            with open(file_path, 'rb') as f:
+                response = HttpResponse(f, content_type='audio/mpeg')
+                response['Content-Disposition'] = f'attachment; filename="tts_{post.id}.mp3"'
+                return response
+        return Response({'message': '음성 파일이 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
         
