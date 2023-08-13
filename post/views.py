@@ -7,6 +7,7 @@ from users.models import Profile, EditorProfile
 from .models import Post, Editor_Post, TTSAudioTitle, TTSAudio, Like
 # from .permissions import CustomReadOnly
 from .serializers import PostSerializer, EditorPostSerializer, EditorPostCreateSerializer, TTSAudioSerializer, TTSAudioTitleSerializer
+from .paginations import PostPagination
 
 from django.db.models import Count, Q
 
@@ -31,6 +32,7 @@ class PostViewSet(viewsets.ModelViewSet):
     # filterset_fields = ["author"] # 이름으로 게시물 모아보기
     # search_fields = ["author"]
     ordering_fields = ["published_date"] #최신 순 정렬
+    pagination_class = PostPagination
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
