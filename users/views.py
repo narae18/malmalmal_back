@@ -24,18 +24,23 @@ class LoginView(generics.GenericAPIView):
         token = serializer.validated_data
         return Response({"token":token.key}, status=status.HTTP_200_OK)
 
-class ProfileView(generics.GenericAPIView):
-    queryset  = Profile.objects.all()
+
+class ProfileView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    
+
     def get_queryset(self):
         return Profile.objects.filter(user=self.request.user)
     
-    #프로필 유저 정보 가져오기
-    def get(self, request, pk):
-        profile = Profile.objects.get(pk=pk)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
     
 class EditorProfileView(generics.GenericAPIView):
     queryset  = EditorProfile.objects.all()
