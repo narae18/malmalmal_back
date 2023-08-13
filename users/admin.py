@@ -5,8 +5,6 @@ from .models import Profile, EditorProfile
 
 
 
-
-
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False     
