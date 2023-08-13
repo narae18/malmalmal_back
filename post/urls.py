@@ -7,4 +7,8 @@ router.register('posts', PostViewSet)
 router.register('editorposts', EditorPostViewSet)
 
 
-urlpatterns = router.urls
+# urlpatterns = router.urls
+urlpatterns = [
+    *router.urls,
+    path('posts/<int:pk>/like/', PostViewSet.as_view({'post': 'like'}), name='post-like'),
+]

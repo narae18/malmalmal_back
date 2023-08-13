@@ -22,19 +22,20 @@ class TTSAudio(models.Model):
     def __str__(self):
         return self.message
 
+
 class Post(models.Model):
     # ID = models.AutoField(primary_key=True, null=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     content = models.TextField(blank=False, null=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile_nickname')
-    like = models.ManyToManyField(User, related_name='liked_post', blank=True, default=0)
+    # like = models.ManyToManyField(User, related_name='liked_post', blank=True, default=0)
+    likes = models.ManyToManyField(User, through='Like', related_name='liked_posts')
     published_date = models.DateTimeField(default=timezone.now)
     tts_title_audio = models.ForeignKey(TTSAudioTitle, on_delete=models.SET_NULL, null=True, blank=True)
     tts_audio = models.ForeignKey(TTSAudio, on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
         return self.title
-
 
 class Editor_Post(models.Model):
     # ID = models.AutoField(primary_key=True, null=False)
@@ -45,10 +46,28 @@ class Editor_Post(models.Model):
     recruit_date = models.DateField(blank=False, null=False)
     place = models.CharField(max_length=100, blank=False, null=False)
     phone_number = models.CharField(max_length=100, blank=False, null=False)
-    like = models.ManyToManyField(User, related_name='editor_liked_post', blank=True,default=0)
+    # like = models.ManyToManyField(User, related_name='editor_liked_post', blank=True,default=0)
+    likes = models.ManyToManyField(User, through='EditorPostLike', related_name='editor_liked_posts')
     scarp = models.ManyToManyField(User, related_name='scarped_post', blank=True, default=0)
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
     published_date = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.title
+    
+    
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')
+        
+class EditorPostLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Editor_Post, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')

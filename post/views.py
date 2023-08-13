@@ -3,7 +3,7 @@ import os
 from rest_framework import viewsets
 
 from users.models import Profile, EditorProfile
-from .models import Post, Editor_Post, TTSAudioTitle, TTSAudio
+from .models import Post, Editor_Post, TTSAudioTitle, TTSAudio, Like
 # from .permissions import CustomReadOnly
 from .serializers import PostSerializer, EditorPostSerializer, EditorPostCreateSerializer, TTSAudioSerializer, TTSAudioTitleSerializer
 
@@ -63,10 +63,24 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
         return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(author=self.request.user, profile=profile)
+    
+    @action(detail=True, methods=['POST'])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+
+        try:
+            like = Like.objects.get(user=user, post=post)
+            like.delete()
+            return Response({'message': '좋아요 취소됨'})
+        except Like.DoesNotExist:
+            Like.objects.create(user=user, post=post)
+            return Response({'message': '좋아요 추가됨'})
+    
+    
         
                 
 class EditorPostViewSet(viewsets.ModelViewSet):
