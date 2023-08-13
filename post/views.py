@@ -1,5 +1,6 @@
 import os
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import viewsets
 
 from users.models import Profile, EditorProfile
@@ -25,6 +26,11 @@ from rest_framework.permissions import AllowAny
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     permission_classes = []
+    
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    # filterset_fields = ["author"] # 이름으로 게시물 모아보기
+    # search_fields = ["author"]
+    ordering_fields = ["published_date"] #최신 순 정렬
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # 'allauth',
     # 'allauth.account',
     'drf_yasg',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
