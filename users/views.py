@@ -28,6 +28,15 @@ class ProfileView(generics.GenericAPIView):
     queryset  = Profile.objects.all()
     serializer_class = ProfileSerializer
     
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user)
+    
+    #프로필 유저 정보 가져오기
+    def get(self, request, pk):
+        profile = Profile.objects.get(pk=pk)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+    
 class EditorProfileView(generics.GenericAPIView):
     queryset  = EditorProfile.objects.all()
     serializer_class = EditorProfileSerializer

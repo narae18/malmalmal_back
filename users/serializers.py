@@ -54,9 +54,11 @@ class LoginSerializer(serializers.Serializer):
         
         
 class ProfileSerializer(serializers.ModelSerializer):
+    liked_posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    
     class Meta:
         model = Profile
-        fields = ['user', 'birthday', 'nickname', 'address']
+        fields = ['user', 'birthday', 'nickname', 'address', 'liked_posts']
         
 
 class EditorProfileSerializer(serializers.ModelSerializer):

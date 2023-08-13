@@ -30,7 +30,7 @@ class PostViewSet(viewsets.ModelViewSet):
     
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     # filterset_fields = ["author"] # 이름으로 게시물 모아보기
-    # search_fields = ["author"]
+    search_fields = ["author"]
     ordering_fields = ["published_date"] #최신 순 정렬
     pagination_class = PostPagination
 
