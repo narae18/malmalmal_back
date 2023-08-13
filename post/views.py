@@ -30,6 +30,10 @@ class PostViewSet(viewsets.ModelViewSet):
             return PostSerializer
         return PostSerializer
     
+    
+    def create(self, request, *args, **kwargs):
+        return self.create_post_with_audio(request, *args, **kwargs)
+    
     @action(detail=False, methods=['post'])
     def create_post_with_audio(self, request):
         post_serializer = PostSerializer(data=request.data, context={'request': request})
@@ -63,6 +67,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
         return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
