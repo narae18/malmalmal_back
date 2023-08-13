@@ -2,7 +2,9 @@ from rest_framework import generics
 
 from .serializers import  ProfileSerializer, EditorProfileSerializer
 from .models import Profile, EditorProfile
-
+from post.models import Post
+from post.serializers import PostSerializer
+from rest_framework.generics import ListAPIView
 
 
 class ProfileListView(generics.ListAPIView):
@@ -25,6 +27,16 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+    
+    
+class UserPostsListView(ListAPIView): #로그인한 유저가 작성한 게시물 모아보기
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = []
+
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(author=user)
 
     
 class EditorProfileView(generics.GenericAPIView):

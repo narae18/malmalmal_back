@@ -96,8 +96,7 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
     
-    
-        
+            
                 
 class EditorPostViewSet(viewsets.ModelViewSet):
     queryset = Editor_Post.objects.all()
