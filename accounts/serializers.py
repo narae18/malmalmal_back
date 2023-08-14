@@ -51,3 +51,10 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError(
             {"error": "로그인 실패ㅠㅠ 아이디 또는 비밀번호가 틀립니다."}
         )
+        
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('__all__')
+        read_only_fields = ('editor_name')
