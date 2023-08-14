@@ -7,9 +7,9 @@ from rest_framework import generics
 from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer
 from .models import Profile
 
-class RegisterView(CreateAPIView):
+class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = RegisterSerializer, ProfileSerializer
+    serializer_class = RegisterSerializer
     
     
 class LoginView(generics.GenericAPIView):

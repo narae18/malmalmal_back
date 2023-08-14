@@ -3,23 +3,40 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from users.models import Profile
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'password2')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('__all__')
+        read_only_fields = ('editor_name')
+
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    
     password = serializers.CharField(
         write_only=True,
         required=True,
         validators=[validate_password]
     )
     password2 = serializers.CharField(write_only=True, required=True)
-    
+    profile = ProfileSerializer()
     # birthday = serializers.DateField(required=True)
     # address = serializers.CharField(required=True)
     # nickname = serializers.CharField(required=True)
     
     class Meta:
-        model = Profile.user.field.related_model
-        fields = ('username', 'password', 'password2') #"birthday", "address", "nickname"
+        model = User
+        fields = ('username', 'password', 'password2', 'profile') #"birthday", "address", "nickname"
         
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -30,11 +47,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return data
     
     def create(self, validated_data):
-        user = Profile.user.field.related_model.objects.create_user(
+        profile_data = validated_data.pop('profile')  # Extract profile data
+        user = User.objects.create_user(
             username=validated_data['username'],
+            password=validated_data['password']
         )
-        user.set_password(validated_data['password'])
-        user.save()
+        Profile.objects.create(user=user, **profile_data)  # Create and link profile
         token, created = Token.objects.get_or_create(user=user)
         return user
 
@@ -53,8 +71,3 @@ class LoginSerializer(serializers.Serializer):
         )
         
         
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ('__all__')
-        read_only_fields = ('editor_name')
